@@ -11,6 +11,7 @@ import Lottie from "lottie-react";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import useAuth from "../Hooks/useAuth";
+import { saveUserToDB } from "@/app/actions/saveUser";
 
 const SignUp = () => {
   const {
@@ -20,38 +21,55 @@ const SignUp = () => {
     formState: { errors, isSubmitting },
   } = useForm();
   const [showPassword, setshowPassword] = useState(false);
-  const {creatUser} = useAuth();
+  const { creatUser } = useAuth();
   const router = useRouter();
 
-
-
   const onsubmit = async (data) => {
+    try {
+      const result = await creatUser(data.email, data.password);
 
+      const userInfo = {
+        name: data.name,
+        email: data.email,
+        //   photoURL: result.user.photoURL || "",
+      };
 
+      const res = await saveUserToDB(userInfo);
 
-       try {
-         const result = await creatUser(data.email,data.password)
-         toast.success('Account Created succesfully!',{duration:2000});
-         router.push('/')
-       } catch (error) {
-        console.log(error);
-        toast.error(error)
-        
-       }
-     
+      if (res.exists) {
+        toast.error("you are already Sign Up. Please Log in!");
+      } else {
+        toast.success("Account Created Succesfuly");
+        router.push("/");
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
+
+  //   const onsubmit = async (data) => {
+  //     try {
+  //       const result = await creatUser(data.email, data.password);
+  //       toast.success("Account Created succesfully!", { duration: 2000 });
+  //       router.push("/");
+  //     } catch (error) {
+  //       console.log(error);
+  //       toast.error(error);
+  //     }
+  //   };
 
   return (
     <div className="bg-[#1E1E1E]  w-full min-h-screen flex justify-center items-center z-0 py-10 md:py-14 lg:py-20 ">
       <div className="bg-[#2C2C2C] rounded-md w-[85%] sm:w-[65%] lg:w-[85%]  h-[480px]  z-10 shadow-2xl grid grid-cols-1 lg:grid-cols-2">
         {/* ----------- lottie img */}
-  <div className="form_img bg-[#1E1E1E] w-full h-[480px] flex justify-center items-center hidden lg:block">
-  <Lottie
-    animationData={img_1}
-    loop={true}
-    className="w-full h-[80%] object-contain"
-  />
-</div>
+        <div className="form_img bg-[#1E1E1E] w-full h-[480px] flex justify-center items-center hidden lg:block">
+          <Lottie
+            animationData={img_1}
+            loop={true}
+            className="w-full h-[80%] object-contain"
+          />
+        </div>
 
         {/* ---------------- sign-up form  */}
         <div className="form_section p-6">
@@ -61,7 +79,10 @@ const SignUp = () => {
           <form action="" onSubmit={handleSubmit(onsubmit)}>
             {/* -----------------name */}
             <div>
-              <label htmlFor="" className="block text-sm font-medium text-gray-300 mb-1">
+              <label
+                htmlFor=""
+                className="block text-sm font-medium text-gray-300 mb-1"
+              >
                 Full Name
               </label>
               <input
@@ -79,7 +100,10 @@ const SignUp = () => {
             <div className="grid grid-cols-1  gap-x-2">
               {/*----------------- email */}
               <div>
-                <label htmlFor="" className="block text-sm font-medium text-gray-300 mb-1">
+                <label
+                  htmlFor=""
+                  className="block text-sm font-medium text-gray-300 mb-1"
+                >
                   Email
                 </label>
                 <input
@@ -96,7 +120,10 @@ const SignUp = () => {
 
               {/*--------------- password */}
               <div className="relative">
-                <label htmlFor="" className="block text-sm font-medium text-gray-300 mb-1">
+                <label
+                  htmlFor=""
+                  className="block text-sm font-medium text-gray-300 mb-1"
+                >
                   Password
                 </label>
                 <input
@@ -130,24 +157,23 @@ const SignUp = () => {
 
             {/* submit button */}
 
-           <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-cyan-500 hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <FaSpinner className="animate-spin"></FaSpinner>
-      
-                        Submitting...
-                      </>
-                    ) : (
-                      <>
-                        Creat Account
-                        <FaArrowRight className="ml-2 h-4 w-4" />
-                      </>
-                    )}
-                  </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-cyan-500 hover:bg-cyan-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition duration-150 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              {isSubmitting ? (
+                <>
+                  <FaSpinner className="animate-spin"></FaSpinner>
+                  Submitting...
+                </>
+              ) : (
+                <>
+                  Creat Account
+                  <FaArrowRight className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </button>
 
             <p className="text-base capitalize sm:text-end my-2 font-semibold text-gray-300">
               Already have an acount ? please{" "}
@@ -156,10 +182,6 @@ const SignUp = () => {
               </Link>
             </p>
           </form>
-
-     
-
-         
         </div>
       </div>
     </div>
