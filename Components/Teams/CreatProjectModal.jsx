@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { FaSpinner } from "react-icons/fa";
 import { IoMdClose, IoMdAdd } from "react-icons/io";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 const base_url = process.env.NEXT_PUBLIC_BASE_URL;
 
 const CreatProjectModal = ({ setShowCreatProjectModal, selectedTeam }) => {
@@ -14,41 +15,47 @@ const CreatProjectModal = ({ setShowCreatProjectModal, selectedTeam }) => {
     formState: { errors, isSubmitting },
   } = useForm();
 
+  const router   = useRouter();
+
   const form_input =
     "w-full pl-3 pr-3 py-3 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 my-2";
 
   const onSubmit = async (data) => {
 
     
-    // const memberData = {
-    //   teamId: selectedTeam?._id,
-    //   member_name: data.member_name,
-    //   role: data.role,
-    //   capacity: data.capacity,
-    //   date : new Date()
-    // };
+    const projectData = {
+      teamId: selectedTeam?._id,
+      team_name : selectedTeam.team_name,
+      teamOwner_name : selectedTeam.owner_name,
+      project_name: data.project_name,
+      description : data.description,
+      date : new Date()
+    };
 
-//          try {
-//     const res = await fetch(`${base_url}/add-team_member`, {
-//       method: "POST",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify(memberData),
-//     });
+         try {
+    const res = await fetch(`${base_url}/add-project`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(projectData),
+    });
 
-//     const result = await res.json();
+    const result = await res.json();
 
-//     if (!result.success) {
-//       toast.error("Failed to add member");
-//       return;
-//     }
 
-//     toast.success("Member added successfully!");
-//     reset();
-//     setShowCreatProjectModal(false);
+     
 
-//   } catch (error) {
-//     toast.error(error.message);
-//   }
+    if (result.acknowledged == true && result.insertedId) {
+    toast.success("Project added successfully!");
+    reset();
+    setShowCreatProjectModal(false);
+  router.push('/all-projects')
+    }
+
+   
+
+  } catch (error) {
+    toast.error(error.message);
+  }
 
 
 
