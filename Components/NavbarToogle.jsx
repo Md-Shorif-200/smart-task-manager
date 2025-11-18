@@ -1,18 +1,21 @@
+"use client";
 
-"use client"; 
-import Navbar from "./Navbar";
 import { usePathname } from "next/navigation";
+import Navbar from "./Navbar";
 
-export default function NavbarToggle() {
+const noLayoutPaths = ["/log-in", "sign-up"];
+
+const LayoutWrapper = ({ children }) => {
   const pathname = usePathname();
-
-  if (pathname === "/log-in" || pathname === "/sign-up") {
-    return null;
-  }
+  const showLayout = !noLayoutPaths.includes(pathname);
 
   return (
-    <div>
-      <Navbar />
-    </div>
+    <>
+      {showLayout && <Navbar />}
+      {children}
+      {/* {showLayout && <Footer />} */}
+    </>
   );
-}
+};
+
+export default LayoutWrapper;

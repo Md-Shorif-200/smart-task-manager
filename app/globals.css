@@ -3,7 +3,7 @@
 
 
 .primary_bg_color  {
-  @apply bg-[#1E1E1E]
+  @apply bg-[#333333]
 }
 
 .primary_text_color {
@@ -11,6 +11,9 @@
 }
 
 
+.primary_btn {
+  @apply bg-cyan-700 text-white px-4 py-2 rounded-md hover:bg-cyan-800 transition duration-200 cursor-pointer
+}
 
 
 
