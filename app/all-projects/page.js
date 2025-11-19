@@ -1,7 +1,18 @@
 
+import React, { Suspense } from "react";
+import Loading from "../loading";
+import Projects from "@/Components/Projects/Projects";
+import { getProjects, getTeams } from "../actions/getData";
 
-export default function projects() {
+export default async function Page() {
+
+  const projects = await getProjects() 
+    const teams = await getTeams();
+
+
   return (
-    <div>projects</div>
-  )
+      <Suspense fallback={<Loading />}>
+      <Projects teams={teams} projects={projects} />
+    </Suspense>
+  );
 }

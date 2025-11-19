@@ -25,6 +25,7 @@ const AddMemberModal = ({ setShowAddMemberModal, selectedTeam }) => {
       member_name: data.member_name,
       role: data.role,
       capacity: data.capacity,
+      currentTasks : 0,
       date : new Date()
     };
 

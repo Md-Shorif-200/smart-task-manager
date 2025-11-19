@@ -5,6 +5,7 @@ import { FaUserCircle, FaSignOutAlt, FaCog } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { FaUsersCog } from "react-icons/fa";
+import { GoProjectSymlink } from "react-icons/go";
 
 import Container from "./Container";
 import Link from "next/link";
@@ -117,6 +118,12 @@ const Navbar = () => {
                       className="flex items-center gap-2 px-4 py-2 hover:bg-gray-800 w-full text-left cursor-pointer"
                     >
                       <FaUsersCog /> My Teams
+                    </Link>
+                    <Link
+                      href="/all-projects"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-800 w-full text-left cursor-pointer"
+                    >
+                      <GoProjectSymlink/> Projects
                     </Link>
 
                     <button
