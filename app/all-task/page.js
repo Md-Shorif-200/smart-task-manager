@@ -1,13 +1,14 @@
-import AllTasks from '@/Components/Tasks/AllTasks'
-import { getTasks, getTeams } from '../actions/getData'
+import AllTasks from "@/Components/Tasks/AllTasks";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
-export default  async function page() {
-      const allTasks = await getTasks()
-      const teams = await getTeams();
-  return (
-    <div>
-         <AllTasks allTasks={allTasks} teams={teams}/>
-    </div>
-  )
+export default async function Page() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/all-tasks`, {
+    cache: "no-store"
+  });
+
+  const allTasks = await res.json();
+
+  return <AllTasks allTasks={allTasks} />;
 }

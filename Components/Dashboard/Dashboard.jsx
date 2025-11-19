@@ -7,18 +7,19 @@ export default function Dashboard({ allTasks, allProjects, activityLog, allTeams
 
    const {user} = useAuth();
 
-  const totalTeams = allTeams.length;
-  const totalProjects = allProjects.length;
-  const totalTasks = allTasks.length;
+  const totalTeams = allTeams?.length;
+  const totalProjects = allProjects?.length;
+  const totalTasks = allTasks?.length;
 
   // Extract all members from all teams (Flatten)
-  const teamMembers = allTeams.flatMap(team =>
-    team.members.map(member => ({
-      name: member.member_name,
-      tasks: member.currentTasks,
-      capacity: Number(member.capacity)
-    }))
-  );
+ const teamMembers = allTeams?.flatMap(team =>
+  (team?.members || []).map(member => ({
+    name: member.member_name,
+    tasks: member.currentTasks,
+    capacity: Number(member.capacity)
+  }))
+) || [];
+
 
   return (
     <div className='primary_bg_color w-full min-h-screen py-8'>
