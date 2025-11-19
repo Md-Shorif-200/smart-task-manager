@@ -12,3 +12,8 @@ export async function getTeams() {
   const teams = await res.json();
   return teams;
 }
+export async function getTasks() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/get-all-tasks`);
+  const teams = await res.json();
+  return teams;
+}

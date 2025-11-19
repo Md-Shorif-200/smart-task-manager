@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import { FaUserCircle, FaSignOutAlt, FaCog } from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
+import { MdAddTask, MdDashboard } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { FaUsersCog } from "react-icons/fa";
 import { GoProjectSymlink } from "react-icons/go";
@@ -99,7 +99,7 @@ const Navbar = () => {
 
                 {/* Dropdown */}
                 {dropdownOpen && (
-                  <div className="absolute right-0 mt-52 w-48 primary_bg_color primary_text_color rounded-md shadow-lg py-2 z-50 border border-gray-500">
+                  <div className="absolute right-0 top-14 w-48 primary_bg_color primary_text_color rounded-md shadow-lg py-2 z-50 border border-gray-500">
                     <Link
                       href="/"
                       className="flex items-center gap-2 px-4 py-2 hover:bg-gray-800 w-full text-left cursor-pointer"
@@ -123,7 +123,13 @@ const Navbar = () => {
                       href="/all-projects"
                       className="flex items-center gap-2 px-4 py-2 hover:bg-gray-800 w-full text-left cursor-pointer"
                     >
-                      <GoProjectSymlink/> Projects
+                      <GoProjectSymlink/> All Projects
+                    </Link>
+                    <Link
+                      href="/all-task"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-800 w-full text-left cursor-pointer"
+                    >
+                      <MdAddTask/> All Tasks
                     </Link>
 
                     <button

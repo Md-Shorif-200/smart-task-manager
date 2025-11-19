@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 const base_url = process.env.NEXT_PUBLIC_BASE_URL;
 
-const AddTaskModal = ({ setShowAddTaskModal, selectedProject,teams }) => {
+const AddTaskModal = ({ setShowAddTaskModal, selectedProject, teams }) => {
   const {
     register,
     handleSubmit,
@@ -17,73 +17,96 @@ const AddTaskModal = ({ setShowAddTaskModal, selectedProject,teams }) => {
   } = useForm();
 
   const router = useRouter();
-
-const currentTeam = teams?.find((team) => team._id == selectedProject.teamId);
-
-
-
-
-  
+  const currentTeam = teams?.find((team) => team._id == selectedProject.teamId);
 
   const form_input =
     "w-full pl-3 pr-3 py-3 rounded-lg border border-gray-600 bg-[#1E1E1E] text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 my-1";
 
   const labelStyle = "text-gray-300 text-sm font-medium mt-2 mb-1";
 
-  const onSubmit = async (data) => {
- const selectedMember = currentTeam.members.find(
-  (m) => m?.id === data?.assigned_member
-);
-
-const taskData = {
-  project_id: selectedProject?._id,
-  team_id: currentTeam._id,
-  team_owner: currentTeam.owner_name,
-  team_owner_email: currentTeam.owner_email,
-  title: data.title,
-  assigned_member:  selectedMember
-    ? {
-        id: selectedMember.id ,
-        name: selectedMember.member_name,
-      }
-    : "Unassigned",
-  priority: data.priority,
-  status: data.status,
-  description: data.description,
-};
-
-     console.log(taskData);
-     
-
+  const submitTask = async (taskData) => {
     try {
       const res = await fetch(`${base_url}/create-task`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(taskData),
       });
 
       const result = await res.json();
 
-        console.log(result);
-        
-
-      if (result.success == true && result.insertedId) {
-        toast.success(`Task created for ${taskData?.assigned_member?.name} was successful!`);
+      if (result.success && result.insertedId) {
+        toast.success(
+          `Task created successfully for ${
+            taskData.assigned_member?.member_name || "Unassigned"
+          }!`
+        );
         reset();
         setShowAddTaskModal(false);
         router.refresh();
+        router.push("/all-task");
       } else {
         toast.error("Failed to add task!");
-        reset()
+        reset();
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
       toast.error("Something went wrong!");
-      reset()
+      reset();
     }
-    
+  };
+
+  const onSubmit = (data) => {
+    const selectedMember = currentTeam.members.find(
+      (m) => m?.id === data?.assigned_member
+    );
+
+    const taskData = {
+      project_id: selectedProject?._id,
+      team_id: currentTeam._id,
+      team_name: currentTeam.team_name,
+      team_owner: currentTeam.owner_name,
+      team_owner_email: currentTeam.owner_email,
+      title: data.title,
+      assigned_member: selectedMember
+        ? { id: selectedMember.id, member_name: selectedMember.member_name }
+        : null,
+      priority: data.priority,
+      status: data.status,
+      description: data.description,
+    };
+
+    // If selected member exceeds capacity, show confirmation toast
+    if (selectedMember && selectedMember.currentTasks >= selectedMember.capacity) {
+      toast(
+        (t) => (
+          <div className="flex flex-col gap-2">
+            <p className="text-white">
+               {selectedMember.member_name} has {selectedMember.currentTasks} tasks but capacity is {selectedMember.capacity}. cancel to choose another.
+            </p>
+            <div className="flex gap-2">
+              <button
+                className="bg-green-500 px-3 py-1 rounded text-white hover:bg-green-600"
+                onClick={() => {
+                  submitTask(taskData);
+                  toast.dismiss(t.id);
+                }}
+              >
+                Assign Anyway
+              </button>
+              <button
+                className="bg-red-500 px-3 py-1 rounded text-white hover:bg-red-600"
+                onClick={() => toast.dismiss(t.id)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ),
+        { duration: 5000, style: { background: "#333" } }
+      );
+    } else {
+      submitTask(taskData); // normal submit if capacity not exceeded
+    }
   };
 
   return (
@@ -99,16 +122,10 @@ const taskData = {
           </button>
 
           {/* Title */}
-          <h2 className="text-white text-2xl font-semibold mb-4">
-            Add New Task
-          </h2>
+          <h2 className="text-white text-2xl font-semibold mb-4">Add New Task</h2>
 
           {/* Form */}
-          <form
-            onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col gap-4"
-          >
-            {/* Two-column grid for Title & Assigned Member */}
+          <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className={labelStyle}>Task Title</label>
@@ -133,22 +150,18 @@ const taskData = {
                 >
                   <option value="">Select Member</option>
                   <option value="Unassigned">Unassigned</option>
-                  {currentTeam?.members?.length > 0 &&
-                    currentTeam.members.map((m) => (
-                      <option key={m.id} value={m.id}>
-                        {m.member_name} ({m.currentTasks}/{m.capacity})
-                      </option>
-                    ))}
+                  {currentTeam?.members?.map((m) => (
+                    <option key={m.id} value={m.id}>
+                      {m.member_name} ({m.currentTasks}/{m.capacity})
+                    </option>
+                  ))}
                 </select>
                 {errors.assigned_member && (
-                  <p className="text-red-500 text-sm">
-                    {errors.assigned_member.message}
-                  </p>
+                  <p className="text-red-500 text-sm">{errors.assigned_member.message}</p>
                 )}
               </div>
             </div>
 
-            {/* Two-column grid for Priority & Status */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div>
                 <label className={labelStyle}>Priority</label>
@@ -183,13 +196,10 @@ const taskData = {
               </div>
             </div>
 
-            {/* DESCRIPTION */}
             <div>
               <label className={labelStyle}>Description</label>
               <textarea
-                {...register("description", {
-                  required: "Description is required",
-                })}
+                {...register("description", { required: "Description is required" })}
                 placeholder="Enter task description"
                 className={form_input}
               ></textarea>
@@ -198,7 +208,6 @@ const taskData = {
               )}
             </div>
 
-            {/* SUBMIT BUTTON */}
             <button
               disabled={isSubmitting}
               type="submit"

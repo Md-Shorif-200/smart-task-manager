@@ -30,7 +30,9 @@ export default function RootLayout({ children }) {
       {children}
 
       </LayoutWrapper>
-           <Toaster/>
+           <Toaster toastOptions={{
+            duration : 2000
+           }}/>
          </AuthProvider>
   
       </body>
