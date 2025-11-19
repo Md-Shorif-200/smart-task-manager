@@ -16,9 +16,9 @@ export default function Dashboard({
   const myTeams =
     allTeams?.filter((team) => team.owner_email === user?.email) || [];
   const myProjects =
-    allProjects?.filter((project) => project.owner_email === user?.email) || [];
+    allProjects?.filter((project) => project.teamOwner_email === user?.email) || [];
   const myTasks =
-    allTasks?.filter((task) => task.owner_email === user?.email) || [];
+    allTasks?.filter((task) => task.team_owner_email === user?.email) || [];
   const myActivityLog =
     activityLog?.filter((log) => log.team_owner_email === user?.email) || [];
 
