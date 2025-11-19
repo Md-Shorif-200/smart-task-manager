@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { FaUserCircle, FaSignOutAlt, FaCog } from "react-icons/fa";
+import { FaUserCircle, FaSignOutAlt, FaCog, FaUser } from "react-icons/fa";
 import { MdAddTask, MdDashboard } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { FaUsersCog } from "react-icons/fa";
@@ -72,14 +72,14 @@ const Navbar = () => {
       <Container>
         <div className="flex justify-between py-5 items-center">
           {/* Logo */}
-          <div className="flex-shrink-0 font-bold text-2xl">SmartTask</div>
+          <div className="flex-shrink-0 font-bold text-2xl uppercase text-white"> smart <span className="text-cyan-600">task</span>  </div>
 
           <div className="flex items-center relative" ref={dropdownRef}>
             {!user ? (
               <Link
                 href="/log-in"
-                className="primary_btn"
-              >
+                className="flex justify-center items-center gap-2 bg-cyan-600 text-white px-4 py-2 rounded-md hover:bg-cyan-800 transition duration-200 cursor-pointer"
+              >   <FaUserCircle className="text-lg"/>
                 Log In
               </Link>
             ) : (

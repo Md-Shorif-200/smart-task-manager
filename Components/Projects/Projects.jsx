@@ -2,12 +2,12 @@
 import { useState } from "react";
 import Container from "../Container";
 import useAuth from "../Hooks/useAuth";
+import { MdAssignmentTurnedIn } from "react-icons/md";
 
-import { FaUserPlus } from "react-icons/fa";
-import { IoMdAdd } from "react-icons/io";
 
 import { MdAddTask } from "react-icons/md";
 import AddTaskModal from "./AddTaskModal";
+import toast from "react-hot-toast";
 
 export default function Projects({ teams,projects }) {
   const { user } = useAuth();
@@ -26,10 +26,67 @@ export default function Projects({ teams,projects }) {
       setSelectedProject(project);
     };
 
-  //   const handleCreatProjectModal = (team) => {
-  //    setShowCreatProjectModal(true);
-  //    setSelectedTeam(team)
-  //   }
+
+
+const handleAutoReassign = async (teamId) => {
+  // Show confirmation toast
+  toast(
+    (t) => (
+      <div className="text-white">
+        <p className="font-semibold mb-2">
+          Are you sure you want to reassign tasks?
+        </p>
+        <div className="flex gap-3 mt-2">
+          <button
+            className="px-3 py-1 rounded bg-green-500 text-white cursor-pointer"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const response = await fetch(
+                  `${process.env.NEXT_PUBLIC_BASE_URL}/auto-reassign/${teamId}`,
+                  {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                  }
+                );
+                const data = await response.json();
+                if (data.success) {
+                  toast.success("Tasks reassigned successfully!");
+                  console.log("Activity logs:", data.logs);
+                  // Optionally, refresh tasks & team members
+                } else {
+                  toast.error(data.message || "No reassignment done.");
+                }
+              } catch (err) {
+                console.error(err);
+                toast.error("Something went wrong!");
+              }
+            }}
+          >
+            Yes
+          </button>
+
+          <button
+            className="px-3 py-1 rounded bg-gray-500 text-white cursor-pointer"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            No
+          </button>
+        </div>
+      </div>
+    ),
+    {
+      duration: 6000,
+      style: {
+        background: "#1E1E1E",
+        color: "#fff",
+      },
+    }
+  );
+};
+
+
+
 
   return (
     <section className="primary_bg_color       w-full min-h-screen p-6 primary_text_color">
@@ -45,8 +102,9 @@ export default function Projects({ teams,projects }) {
                 <th className="p-4 border-b border-gray-600">Project Name</th>
                 <th className="p-4 border-b border-gray-600">Team</th>
 
-                <th className="p-4 border-b border-gray-600 ">Action</th>
-                {/* <th className="p-4 border-b border-gray-600 text-center"></th> */}
+                <th className="p-4 border-b border-gray-600 "></th>
+                <th className="p-4 border-b border-gray-600  ">Action</th>
+                <th className="p-4 border-b border-gray-600 "></th>
               </tr>
             </thead>
 
@@ -82,19 +140,21 @@ export default function Projects({ teams,projects }) {
                       </button>
                     </td>
 
-                    {/* <td className="p-4 border-b border-gray-700/50 text-center">
+                     <td className="p-4 border-b border-gray-700/50 text-center">
                       <button
                            onClick={
-                            () => handleCreatProjectModal(team)}
+                            () => handleAutoReassign(project.teamId)}
                         className="
                           bg-transparent border border-cyan-600 hover:bg-cyan-700 text-white text-sm 
     font-medium px-3 py-2 rounded-lg flex items-center gap-2 transition-colors cursor-pointer
                       "
                       >
-                        <IoMdAdd className="text-lg text-white font-bold" />
-                        Projects
+                        <MdAssignmentTurnedIn  className="text-lg text-white font-bold" />
+                      Auto Reassignment
                       </button>
-                    </td> */}
+                    </td> 
+
+                    <td></td>
                   </tr>
                 ))
               ) : (

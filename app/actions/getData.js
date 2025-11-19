@@ -17,3 +17,13 @@ export async function getTasks() {
   const teams = await res.json();
   return teams;
 }
+
+
+export async function getActivityLog() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/get-activity-log`, {
+    cache: "no-store" // always fetch fresh data
+  });
+  const data = await res.json();
+  return data;
+}
+
