@@ -2,6 +2,7 @@
 import Container from '../Container'
 import Link from 'next/link';
 import useAuth from '../Hooks/useAuth';
+import { RiShareForward2Line } from "react-icons/ri";
 
 export default function Dashboard({ allTasks, allProjects, activityLog, allTeams }) {
 
@@ -24,7 +25,7 @@ export default function Dashboard({ allTasks, allProjects, activityLog, allTeams
   return (
     <div className='primary_bg_color w-full min-h-screen py-8'>
       <Container>
-        <h1 className='text-2xl font-bold text-gray-100 mb-6'>Dashboard</h1>
+        {/* <h1 className='text-2xl font-bold text-cyan-400 mb-6'>Dashboard</h1> */}
 
         {/* ===== Top Section ===== */}
         <div className='flex flex-col lg:flex-row gap-6 mb-8'>
@@ -47,7 +48,7 @@ export default function Dashboard({ allTasks, allProjects, activityLog, allTeams
 
           {/* Right Sub-section: Recent Reassignments */}
           <div className='bg-[#1E1E1E] p-6 rounded-lg flex-1'>
-            <h2 className='text-2xl font-semibold text-gray-300 mb-4'>Recent Reassignments</h2>
+            <h2 className='text-2xl font-semibold text-cyan-400 mb-4'>Recent Reassignments</h2>
             <ul className='space-y-2'>
               {activityLog.slice(-5).map((item, idx) => {
                 const time = new Date(item.time).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
@@ -59,13 +60,20 @@ export default function Dashboard({ allTasks, allProjects, activityLog, allTeams
                 )
               })}
             </ul>
+
+              <div className='flex justify-end mt-4'>
+                <Link href='/activity-log' className='text-cyan-400 font-semibold flex justify-center items-center gap-2 hover:text-cyan-500'>
+                  <RiShareForward2Line className='text-cyan-400 text-lg'/>
+                  See More
+              </Link>
+              </div>
           </div>
 
         </div>
 
         {/* ===== Bottom Section: Team Summary ===== */}
         <div className='bg-[#1E1E1E] p-6 rounded-lg'>
-          <h2 className='text-xl font-semibold text-gray-300 mb-4'>Team Summary</h2>
+          <h2 className='text-xl font-semibold text-cyan-400 mb-4'>Team Summary</h2>
           <table className='w-full text-gray-300'>
             <thead>
               <tr className='border-b border-gray-700'>

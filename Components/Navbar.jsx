@@ -6,6 +6,7 @@ import { MdAddTask, MdDashboard } from "react-icons/md";
 import { IoMdAdd } from "react-icons/io";
 import { FaUsersCog } from "react-icons/fa";
 import { GoProjectSymlink } from "react-icons/go";
+import { LuLogs } from "react-icons/lu";
 
 import Container from "./Container";
 import Link from "next/link";
@@ -161,6 +162,13 @@ const Navbar = () => {
       className="flex items-center gap-2 px-4 py-2 hover:bg-gray-800 w-full text-left cursor-pointer"
     >
       <MdAddTask/> All Tasks
+    </Link>
+    <Link
+      href="/activity-log"
+      onClick={() => setDropdownOpen(false)}
+      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-800 w-full text-left cursor-pointer"
+    >
+      <LuLogs/> Activity Logs
     </Link>
 
     <button
