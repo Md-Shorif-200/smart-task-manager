@@ -91,7 +91,7 @@ const handleAutoReassign = async (teamId) => {
   return (
     <section className="primary_bg_color       w-full min-h-screen p-6 primary_text_color">
       <Container>
-        <h2 className="text-2xl font-semibold primary_text_color mb-10">
+        <h2 className="text-2xl font-semibold primary_text_color mb-6">
           All Projects
         </h2>
         <div className="overflow-x-auto rounded-xl border border-gray-600/50">
